@@ -1,0 +1,4 @@
+El archivo roadNet-PA.txt es demasiado pesado para github.
+
+Para que el programa pueda funcionar tienes que descargar 
+el dataset de Pennsylvania y ponerlo enla carpeta de datos con el mismo nombre
