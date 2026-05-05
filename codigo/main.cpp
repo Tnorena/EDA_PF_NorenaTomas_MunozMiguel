@@ -7,31 +7,51 @@
 #include <sstream>
 #include <queue>
 #include <cstdlib>
+#include <limits>
 
 using namespace std;
 
 // aqui estamos definiendo el mapa como una lista de adyacencia (un vector de vectores)
-// Lo llamamos 'mapaDeConexiones'
-
 vector<vector<pair<int, int>>> mapaDeConexiones;
-bool estanConectados(int inicio, int fin) {
-    if (inicio == fin) return true;
-    if (inicio < 0 || inicio >= mapaDeConexiones.size()) return false;
-    vector<bool> visitado(mapaDeConexiones.size(), false);
-    queue<int> cola;
-    visitado[inicio] = true;
-    cola.push(inicio);
+// Esta función reemplaza a estanConectados para darnos la distancia real
+void encontrarRutaMasCorta(int inicio, int destino) {
+    if (inicio < 0 || inicio >= (int)mapaDeConexiones.size() || destino < 0 || destino >= (int)mapaDeConexiones.size()) {
+        cout << "Error: Uno de los nodos no existe en el mapa." << endl;
+        return;
+    }
+
+    const long long INF = numeric_limits<long long>::max();
+    vector<long long> distancias(mapaDeConexiones.size(), INF);
+    distancias[inicio] = 0;
+
+    priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<pair<long long, int>>> cola;
+    cola.push({0, inicio});
+
     while (!cola.empty()) {
-        int actual = cola.front(); cola.pop();
-        for (auto& con : mapaDeConexiones[actual]) {
-            if (con.first == fin) return true;
-            if (!visitado[con.first]) {
-                visitado[con.first] = true;
-                cola.push(con.first);
+        long long d = cola.top().first;
+        int actual = cola.top().second;
+        cola.pop();
+
+        if (d > distancias[actual]) continue;
+        if (actual == destino) break;
+
+        for (auto& calle : mapaDeConexiones[actual]) {
+            int vecino = calle.first;
+            int peso = calle.second;
+
+            if (distancias[actual] + peso < distancias[vecino]) {
+                distancias[vecino] = distancias[actual] + peso;
+                cola.push({distancias[vecino], vecino});
             }
         }
     }
-    return false;
+
+    if (distancias[destino] == INF) {
+        cout << "Resultado: No existe ninguna ruta entre " << inicio << " y " << destino << endl;
+    } else {
+        cout << "Resultado: ¡Ruta encontrada!" << endl;
+        cout << "La distancia mas corta es de: " << distancias[destino] << " km." << endl;
+    }
 }
 
 int main() {
@@ -74,33 +94,18 @@ int main() {
     cout << "Se han cargado con exito " << cantidadDeCalles << " conexiones en el mapa." << endl;
     
     archivoDelMapa.close();
-    // esto es para verificar que no solo cargo los datos, sino que puedo leerlos
-    int nodoUsuario;
-    cout << "\n¿Que nodo quieres revisar? (Escribe el numero): ";
-    cin >> nodoUsuario;
 
-    if (nodoUsuario >= 0 && nodoUsuario < mapaDeConexiones.size()) {
-        if (mapaDeConexiones[nodoUsuario].empty()) {
-            cout << "Ese nodo existe pero no tiene calles conectadas." << endl;
-        } else {
-            cout << "El nodo " << nodoUsuario << " tiene conexiones con: ";
-            for (auto& con : mapaDeConexiones[nodoUsuario]) {
-                cout << con.first << "(" << con.second << "km) ";
-            }
-            cout << endl;
-        }
-    } else {
-        cout << "Ese ID de nodo no esta en el mapa de Pensilvania." << endl;
-    }
     int nodoA, nodoB;
-    cout << "\n--- Verificador de Conectividad ---" << endl;
-    cout << "Ingrese origen: "; cin >> nodoA;
-    cout << "Ingrese destino: "; cin >> nodoB;
+    cout << "   Calculadora de Ruta Minima (Dijkstra)" << endl;
+    cout << "Ingrese origen: "; 
+    cin >> nodoA;
+    cout << "Ingrese destino: "; 
+    cin >> nodoB;
 
-    if (estanConectados(nodoA, nodoB)) {
-        cout << "RESULTADO: SI existe un camino entre " << nodoA << " y " << nodoB << endl;
-    } else {
-        cout << "RESULTADO: NO estan conectados." << endl;
-    }
+    cout << "\nCalculando ruta mas corta..." << endl;
+    
+    // Esta función es la que te dará los KILÓMETROS exactos
+    encontrarRutaMasCorta(nodoA, nodoB);
+
     return 0;
-}
+    }
