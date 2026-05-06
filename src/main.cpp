@@ -57,10 +57,10 @@ void encontrarRutaMasCorta(int inicio, int destino) {
 int main() {
     srand(42);
     // usamos 'archivoDelMapa' para el lector
-    ifstream archivoDelMapa("datos/roadNet-PA.txt"); 
+    ifstream archivoDelMapa("data/roadNet-PA.txt"); 
     
     if (!archivoDelMapa.is_open()) {
-        cout << "Error: No se encontro el archivo en la carpeta 'datos'" << endl;
+        cout << "Error: No se encontro el archivo en la carpeta 'data'" << endl;
         return 1;
     }
 
