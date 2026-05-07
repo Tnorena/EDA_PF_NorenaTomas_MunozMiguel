@@ -1,0 +1,12 @@
+=== ANALISIS ESTRUCTURAL - roadNet-PA ===
+Estadistica                        | Valor obtenido   | Valor SNAP
+-----------------------------------|------------------|------------
+Nodos (con aristas)                | 1088092       | 1,088,092
+Aristas unicas                     | 1541898       | 1,541,898
+Nodos componente principal         | 1087562       | 1,087,562
+Numero de componentes conexas      | 206           |
+Grado promedio                     | 2.83413           | ~2.83
+Nodo de mayor grado                | 674502           |
+Grado del nodo maximo              | 9           |
+Diametro aproximado (BFS)          | 592           | 782
+Nodos alcanzados por BFS           | 1087562       |

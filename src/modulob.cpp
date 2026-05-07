@@ -1,61 +1,45 @@
-// Modulo B: ejecuta las 10 consultas P2P con Dijkstra y BFS
-
+// modulob.cpp - Tomás Noreña y Miguel Muñoz
 #include "graph.hpp"
-#include "dijkstra.cpp"
-#include "bfs.cpp"
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
+#include <limits>
 using namespace std;
 
-struct Consulta {
-    string nombre;
-    int origen;
-    int destino;
-};
+ResultadoDijkstra dijkstra(const Grafo* g, int inicio, int destino, bool guardarCamino);
+ResultadoBFS bfs(const Grafo* g, int inicio, int destino, bool guardarCamino);
 
-void ejecutarModuloB(const Grafo* g, const string& archivoCSV) {
+void ejecutarModuloB(const Grafo* g, const string& archivoCSV,
+                     vector<int>& caminoQ01, vector<int>& caminoQ06) {
     cout << "\n=== MODULO B: Consultas P2P ===" << endl;
 
-    //las 10 consultas fijas del enunciado
-    vector<Consulta> consultas = {
-        {"Q01",       1,  500000},
-        {"Q02",     100, 1000000},
-        {"Q03",   50000,  750000},
-        {"Q04",  200000,  800000},
-        {"Q05",  300000,  100000},
-        {"Q06",       1, 1087562},
-        {"Q07",  500000,       1},
-        {"Q08",  250000,  600000},
-        {"Q09",   10000,  900000},
-        {"Q10",  400000,  150000}
-    };
+    string nombres[10] = {"Q01","Q02","Q03","Q04","Q05","Q06","Q07","Q08","Q09","Q10"};
+    int origenes[10]   = {1, 100, 50000, 200000, 300000, 1, 500000, 250000, 10000, 400000};
+    int destinos[10]   = {500000, 1000000, 750000, 800000, 100000, 1087562, 1, 600000, 900000, 150000};
 
-    //abrir CSV de salida
     ofstream csv(archivoCSV);
     if (!csv.is_open()) {
         cerr << "No se pudo crear: " << archivoCSV << endl;
         return;
     }
 
-    //encabezado del CSV
     csv << "consulta,origen,destino,dist_dijkstra,saltos_bfs,"
         << "nodos_dijkstra,nodos_bfs,t_dijkstra_ms,t_bfs_ms" << endl;
 
-    for (int i = 0; i < (int)consultas.size(); i++) {
-        Consulta& c = consultas[i];
-        cout << "\nEjecutando " << c.nombre << " (" << c.origen << " -> " << c.destino << ")..." << endl;
+    for (int i = 0; i < 10; i++) {
+        cout << "\nEjecutando " << nombres[i] << " (" << origenes[i] << " -> " << destinos[i] << ")..." << endl;
 
-        //Q01 y Q06 guardan el camino completo
-        bool guardarCamino = (c.nombre == "Q01" || c.nombre == "Q06");
+        bool guardarCamino = (nombres[i] == "Q01" || nombres[i] == "Q06");
 
-        ResultadoDijkstra resDijk = dijkstra(g, c.origen, c.destino, guardarCamino);
-        ResultadoBFS      resBFS  = bfs(g, c.origen, c.destino, false);
+        ResultadoDijkstra resDijk = dijkstra(g, origenes[i], destinos[i], guardarCamino);
+        ResultadoBFS      resBFS  = bfs(g, origenes[i], destinos[i], false);
 
-        //mostrar en pantalla
+        if (nombres[i] == "Q01") caminoQ01 = resDijk.camino;
+        if (nombres[i] == "Q06") caminoQ06 = resDijk.camino;
+
         if (resDijk.distancia == numeric_limits<long long>::max()) {
-            cout << "  Dijkstra: SIN CAMINO (nodos en componentes distintas)" << endl;
+            cout << "  Dijkstra: SIN CAMINO" << endl;
         } else {
             cout << "  Dijkstra: distancia = " << resDijk.distancia
                  << " | nodos explorados = " << resDijk.nodosExplorados
@@ -63,22 +47,19 @@ void ejecutarModuloB(const Grafo* g, const string& archivoCSV) {
         }
 
         if (resBFS.saltos == -1) {
-            cout << "  BFS:      SIN CAMINO" << endl;
+            cout << "  BFS: SIN CAMINO" << endl;
         } else {
-            cout << "  BFS:      saltos = " << resBFS.saltos
+            cout << "  BFS: saltos = " << resBFS.saltos
                  << " | nodos explorados = " << resBFS.nodosExplorados
                  << " | tiempo = " << resBFS.tiempoMs << " ms" << endl;
         }
 
-        //escribir en CSV
-        string distDijk = (resDijk.distancia == numeric_limits<long long>::max()) 
-                          ? "INF" : to_string(resDijk.distancia);
-        string saltosBFS = (resBFS.saltos == -1) 
-                          ? "INF" : to_string(resBFS.saltos);
+        string distDijk  = (resDijk.distancia == numeric_limits<long long>::max()) ? "INF" : to_string(resDijk.distancia);
+        string saltosBFS = (resBFS.saltos == -1) ? "INF" : to_string(resBFS.saltos);
 
-        csv << c.nombre << ","
-            << c.origen << ","
-            << c.destino << ","
+        csv << nombres[i] << ","
+            << origenes[i] << ","
+            << destinos[i] << ","
             << distDijk << ","
             << saltosBFS << ","
             << resDijk.nodosExplorados << ","
@@ -86,11 +67,10 @@ void ejecutarModuloB(const Grafo* g, const string& archivoCSV) {
             << resDijk.tiempoMs << ","
             << resBFS.tiempoMs << endl;
 
-        //guardar camino completo para Q01 y Q06
         if (guardarCamino && !resDijk.camino.empty()) {
-            string nombreCamino = "results/camino_" + c.nombre + ".txt";
-            ofstream archivoCamino(nombreCamino);
-            archivoCamino << "Camino de " << c.origen << " a " << c.destino << endl;
+            string nombreArchivo = "results/camino_" + nombres[i] + ".txt";
+            ofstream archivoCamino(nombreArchivo);
+            archivoCamino << "Camino de " << origenes[i] << " a " << destinos[i] << endl;
             archivoCamino << "Distancia total: " << resDijk.distancia << endl;
             archivoCamino << "Numero de nodos en el camino: " << resDijk.camino.size() << endl;
             archivoCamino << "Secuencia de nodos:" << endl;
@@ -98,7 +78,7 @@ void ejecutarModuloB(const Grafo* g, const string& archivoCSV) {
                 archivoCamino << nodo << endl;
             }
             archivoCamino.close();
-            cout << "  Camino guardado en: " << nombreCamino << endl;
+            cout << "  Camino guardado en: " << nombreArchivo << endl;
         }
     }
 

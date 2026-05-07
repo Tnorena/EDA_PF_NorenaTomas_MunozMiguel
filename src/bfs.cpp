@@ -1,28 +1,17 @@
-// BFS no ponderado: cuenta saltos y nodos explorados
-
+// bfs.cpp - Tomás Noreña y Miguel Muñoz
 #include "graph.hpp"
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <limits>
-#include <chrono>
 #include <algorithm>
+#include <chrono>
 using namespace std;
 
-struct ResultadoBFS {
-    int saltos;           //numero de saltos (distancia no ponderada)
-    int nodosExplorados;  //nodos que BFS visito
-    double tiempoMs;
-    vector<int> camino;   //solo si se pide
-};
-
-
-vector<int> reconstruirCaminoBFS(const vector<int>& prev, int inicio, int destino) { // Sigue los punteros "prev" hacia atrás desde..
-    //..el destino hasta el inicio y voltea el vector al final para que quede en orden correcto.
+vector<int> reconstruirCaminoBFS(const vector<int>& prev, int inicio, int destino) {
     vector<int> camino;
     int actual = destino;
 
-    if (prev[destino] == -1 && destino != inicio) { // Si destino no tiene padre y tampoco es el inicio, no hay camino
+    if (prev[destino] == -1 && destino != inicio) {
         return camino;
     }
 
@@ -36,19 +25,19 @@ vector<int> reconstruirCaminoBFS(const vector<int>& prev, int inicio, int destin
 
 ResultadoBFS bfs(const Grafo* g, int inicio, int destino, bool guardarCamino) {
     ResultadoBFS resultado;
-    resultado.saltos = -1;  // -1 = sin camino
+    resultado.saltos = -1;
     resultado.nodosExplorados = 0;
+    resultado.tiempoMs = 0;
 
     int n = g->numNodos;
 
     if (inicio < 0 || inicio >= n || destino < 0 || destino >= n) {
         cout << "Error: nodo fuera de rango." << endl;
-        resultado.tiempoMs = 0;
         return resultado;
     }
 
-    vector<int> dist(n, -1); // -1 = no visitado
-    vector<int> prev(n, -1); // -1 = sin padre (nodo raíz o no alcanzado)
+    vector<int> dist(n, -1);
+    vector<int> prev(n, -1);
 
     dist[inicio] = 0;
     queue<int> cola;
@@ -65,7 +54,7 @@ ResultadoBFS bfs(const Grafo* g, int inicio, int destino, bool guardarCamino) {
 
         for (auto& arista : g->adj[actual]) {
             int vecino = arista.first;
-            if (dist[vecino] == -1) { // Solo encolamos si no fue visitado antes
+            if (dist[vecino] == -1) {
                 dist[vecino] = dist[actual] + 1;
                 prev[vecino] = actual;
                 cola.push(vecino);

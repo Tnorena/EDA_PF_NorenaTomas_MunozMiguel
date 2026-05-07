@@ -7,7 +7,6 @@
 #include <algorithm>
 using namespace std;
 
-// Primera pasada: solo para saber cuál es el nodo con ID más grande
 int encontrarNodoMaximo(const string& nombreArchivo) {
     ifstream archivo(nombreArchivo);
     if (!archivo.is_open()) {
@@ -40,7 +39,6 @@ Grafo* cargarGrafo(const string& nombreArchivo) {
         return nullptr;
     }
 
-    // misma semilla = mismos números aleatorios siempre
     srand(42);
 
     string linea;
@@ -53,13 +51,10 @@ Grafo* cargarGrafo(const string& nombreArchivo) {
         if (linea.empty() || linea[0] == '#') continue;
         stringstream ss(linea);
         if (!(ss >> u >> v)) continue;
-        if (u == v) continue; // ignorar auto-lazos
+        if (u == v) continue;
 
-        // Siempre llamamos rand() para que el avance sea igual en todos los equipos
         int peso = (rand() % 10) + 1;
 
-        // Solo insertamos si u < v para evitar duplicados
-        // (el archivo SNAP ya trae u->v y v->u como dos líneas)
         if (u < v) {
             g->agregarArista(u, v, peso);
         }

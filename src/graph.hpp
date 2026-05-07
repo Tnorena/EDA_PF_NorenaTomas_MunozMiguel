@@ -1,30 +1,37 @@
-// Estructura principal del grafo como lista de adyacencia
-
+// graph.hpp - Tomás Noreña y Miguel Muñoz
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
 #include <vector>
-#include <utility>  // para pair
-
+#include <utility>
 using namespace std;
 
-// Cada nodo guarda una lista de (vecino, peso)
-// Usamos lista de adyacencia porque la matriz requeriría ~4.7 TB
-// para 1,088,092 nodos (1088092^2 * 4 bytes)
 struct Grafo {
     int numNodos;
     int numAristas;
-    vector<vector<pair<int,int>>> adj; // adj[u] = { {v, peso}, ... }
+    vector<vector<pair<int,int>>> adj;
 
-    // Constructor: inicializa con n nodos y sin aristas
     Grafo(int n) : numNodos(n), numAristas(0), adj(n) {}
 
-    // Agrega arista no dirigida con peso dado
     void agregarArista(int u, int v, int peso) {
         adj[u].push_back({v, peso});
         adj[v].push_back({u, peso});
         numAristas++;
     }
+};
+
+struct ResultadoDijkstra {
+    long long distancia;
+    int nodosExplorados;
+    double tiempoMs;
+    vector<int> camino;
+};
+
+struct ResultadoBFS {
+    int saltos;
+    int nodosExplorados;
+    double tiempoMs;
+    vector<int> camino;
 };
 
 #endif
