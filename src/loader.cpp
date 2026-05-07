@@ -40,7 +40,7 @@ Grafo* cargarGrafo(const string& nombreArchivo) {
         return nullptr;
     }
 
-    // srand(42) antes de cualquier rand() — obligatorio para reproducibilidad
+    // misma semilla = mismos números aleatorios siempre
     srand(42);
 
     string linea;

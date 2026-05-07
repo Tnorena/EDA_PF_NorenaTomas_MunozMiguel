@@ -16,11 +16,13 @@ struct ResultadoBFS {
     vector<int> camino;   //solo si se pide
 };
 
-vector<int> reconstruirCaminoBFS(const vector<int>& prev, int inicio, int destino) {
+
+vector<int> reconstruirCaminoBFS(const vector<int>& prev, int inicio, int destino) { // Sigue los punteros "prev" hacia atrás desde..
+    //..el destino hasta el inicio y voltea el vector al final para que quede en orden correcto.
     vector<int> camino;
     int actual = destino;
 
-    if (prev[destino] == -1 && destino != inicio) {
+    if (prev[destino] == -1 && destino != inicio) { // Si destino no tiene padre y tampoco es el inicio, no hay camino
         return camino;
     }
 
@@ -45,8 +47,8 @@ ResultadoBFS bfs(const Grafo* g, int inicio, int destino, bool guardarCamino) {
         return resultado;
     }
 
-    vector<int> dist(n, -1);
-    vector<int> prev(n, -1);
+    vector<int> dist(n, -1); // -1 = no visitado
+    vector<int> prev(n, -1); // -1 = sin padre (nodo raíz o no alcanzado)
 
     dist[inicio] = 0;
     queue<int> cola;
@@ -63,7 +65,7 @@ ResultadoBFS bfs(const Grafo* g, int inicio, int destino, bool guardarCamino) {
 
         for (auto& arista : g->adj[actual]) {
             int vecino = arista.first;
-            if (dist[vecino] == -1) {
+            if (dist[vecino] == -1) { // Solo encolamos si no fue visitado antes
                 dist[vecino] = dist[actual] + 1;
                 prev[vecino] = actual;
                 cola.push(vecino);

@@ -11,7 +11,7 @@ vector<vector<pair<int, int>>> mapaDeConexiones;
 // Esta función reemplaza a estanConectados para darnos la distancia real
 void encontrarRutaMasCorta(int inicio, int destino) {
     if (inicio < 0 || inicio >= (int)mapaDeConexiones.size() || destino < 0 || destino >= (int)mapaDeConexiones.size()) {
-        cout << "Error: Uno de los nodos no existe en el mapa." << endl;
+        cout << "Error: uno de los nodos no existe en el mapa." << endl;
         return;
     }
 
@@ -44,7 +44,7 @@ void encontrarRutaMasCorta(int inicio, int destino) {
     if (distancias[destino] == INF) {
         cout << "Resultado: No existe ninguna ruta entre " << inicio << " y " << destino << endl;
     } else {
-        cout << "Resultado: ¡Ruta encontrada!" << endl;
+        cout << "Resultado: Ruta encontrada" << endl;
         cout << "La distancia mas corta es de: " << distancias[destino] << " km." << endl;
     }
 }
@@ -55,7 +55,7 @@ int main() {
     ifstream archivoDelMapa("datos/roadNet-PA.txt"); 
     
     if (!archivoDelMapa.is_open()) {
-        cout << "Error: No se encontro el archivo en la carpeta 'datos'" << endl;
+        cout << "Error: No se encontro el archivo en la carpeta de datos" << endl;
         return 1;
     }
 
@@ -64,7 +64,7 @@ int main() {
     } else if (modulo == "B") {
         ejecutarModuloB(g, "results/consultas_p2p.csv");
     } else if (modulo == "C") {
-        cout << "Modulo C: proximamente..." << endl;
+        cout << "Modulo C: proximamente" << endl;
     } else {
         cout << "Modulo no reconocido: " << modulo << endl;
     }
