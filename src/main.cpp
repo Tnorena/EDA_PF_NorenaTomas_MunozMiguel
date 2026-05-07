@@ -1,3 +1,4 @@
+//hecho con ayuda de Gemini, Por Tomás Noreña y Miguel muñoz
 #include <iostream>
 #include <string>
 #include "graph.hpp"
