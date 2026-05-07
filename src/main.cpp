@@ -1,14 +1,9 @@
-//hecho con ayuda de Gemini, Por Tomás Noreña y Miguel muñoz
-
 #include <iostream>
-#include <fstream>
-#include <vector>
 #include <string>
-#include <sstream>
-#include <queue>
-#include <cstdlib>
-#include <limits>
-
+#include "graph.hpp"
+#include "loader.cpp"
+#include "structural.cpp"
+#include "modulob.cpp"
 using namespace std;
 
 // aqui estamos definiendo el mapa como una lista de adyacencia (un vector de vectores)
@@ -57,55 +52,23 @@ void encontrarRutaMasCorta(int inicio, int destino) {
 int main() {
     srand(42);
     // usamos 'archivoDelMapa' para el lector
-    ifstream archivoDelMapa("data/roadNet-PA.txt"); 
+    ifstream archivoDelMapa("datos/roadNet-PA.txt"); 
     
     if (!archivoDelMapa.is_open()) {
-        cout << "Error: No se encontro el archivo en la carpeta 'data'" << endl;
+        cout << "Error: No se encontro el archivo en la carpeta 'datos'" << endl;
         return 1;
     }
 
-    string linea;
-    int origen, destino;
-    int cantidadDeCalles = 0;
-    int nodoMaximo = 1090920; // Pensilvania tiene aprox. este número de nodos
-
-    // aquí preparamos el tamaño del mapa para que no falle la memoria
-    mapaDeConexiones.resize(nodoMaximo + 1);
-
-    cout << "Cargando el mapa de Pensilvania..." << endl;
-
-    while (getline(archivoDelMapa, linea)) {
-        if (linea.empty() || linea[0] == '#') continue;
-        stringstream lectorDeLinea(linea);
-
-        if (lectorDeLinea >> origen >> destino) {
-            int nodoMax = (origen > destino) ? origen : destino;
-            int distancia = (rand() % 10) + 1; // Genera distancia entre 1 y 10
-            if (nodoMax >= (int)mapaDeConexiones.size()) {
-                mapaDeConexiones.resize(nodoMax + 1);
-            }
-
-            mapaDeConexiones[origen].push_back({destino, distancia});
-            mapaDeConexiones[destino].push_back({origen, distancia});
-            cantidadDeCalles++;
-        }
+    if (modulo == "A") {
+        ejecutarModuloA(g, "results/analisis_estructural.txt");
+    } else if (modulo == "B") {
+        ejecutarModuloB(g, "results/consultas_p2p.csv");
+    } else if (modulo == "C") {
+        cout << "Modulo C: proximamente..." << endl;
+    } else {
+        cout << "Modulo no reconocido: " << modulo << endl;
     }
 
-    cout << "Se han cargado con exito " << cantidadDeCalles << " conexiones en el mapa." << endl;
-    
-    archivoDelMapa.close();
-
-    int nodoA, nodoB;
-    cout << "   Calculadora de Ruta Minima (Dijkstra)" << endl;
-    cout << "Ingrese origen: "; 
-    cin >> nodoA;
-    cout << "Ingrese destino: "; 
-    cin >> nodoB;
-
-    cout << "\nCalculando ruta mas corta..." << endl;
-    
-    // Esta función es la que te dará los KILÓMETROS exactos
-    encontrarRutaMasCorta(nodoA, nodoB);
-
+    delete g;
     return 0;
-    }
+}
