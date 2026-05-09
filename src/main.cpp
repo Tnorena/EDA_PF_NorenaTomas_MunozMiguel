@@ -1,5 +1,3 @@
-//(Hecho con ayuda de Gemini y Claude code con detenimiento, revisión profunda y también como metodo de aprendizaje)
-
 #include <iostream>
 #include <fstream>
 #include <vector>
