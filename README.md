@@ -55,7 +55,6 @@ EDA_PF_NorenaTomas_MunozMiguel
         structural.cpp
         subgraph.cpp
     README.md
-    proyecto.exe
 
 # Compilación
 
